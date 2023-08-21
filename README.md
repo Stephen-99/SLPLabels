@@ -1,3 +1,7 @@
+# Adding position labels to this dataset.
+
+
+
 # In-bed Multi-modal Human Dataset
 This dataset recorded in-bed human subjects from multiple modality sensors including RGB, IR for pose estimation purpose. 
 The data is collected in both a home setting and hospital setting environment named 'danaLab' and 'simLab' with 102 （73 male, 28 femaile) and 7 subjects (4 male 3 female) respectively. 
