@@ -1,0 +1,13 @@
+1.	Lying on back, hands by sides.
+2.	Lying on back, hands under head.
+3.	Lying on stomach, hands by sides.
+4.	Lying on stomach, hands under head.
+5.	Lying on left side, hands under head.
+6.	Lying on left side, right hand by side.
+7.	Lying on right side, hands under head.
+8.	Lying on right side, left hand by side.
+9.	Standing next to hospital bed.
+
+NOTE: treating hand on chest as under head too
+    Not actually sure how to treat this
+    It gets tricky with side on...
