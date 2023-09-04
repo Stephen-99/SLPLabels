@@ -8,6 +8,10 @@
 8.	Lying on right side, left hand by side.
 9.	Standing next to hospital bed.
 
+Use an other class...
+    2-level classification. back, LS, RS then hannd pos (sides, under head, other)
+    
+
 NOTE: treating hand on chest as under head too
     Not actually sure how to treat this
     It gets tricky with side on...
