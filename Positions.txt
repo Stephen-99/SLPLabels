@@ -11,3 +11,10 @@
 NOTE: treating hand on chest as under head too
     Not actually sure how to treat this
     It gets tricky with side on...
+    
+    SO:
+    We just care about the 8 positions
+    Use a 2 stage classifier
+    first: back, Left side, right side or stomach (absent in this dataset)
+    second: hands under head or by side.
+    Both will have an other option.

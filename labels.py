@@ -10,32 +10,25 @@ import tkinter as tk
 import threading
 from ImageGUI import *
 
+from Position import *
+
 def main():
     NUM_PARTICIPANTS = 109
     NUM_SAMPLES_PER_PARTICIPANT = 45
-    NUM_POSITIONS = 9
-    POSITIONS = ["lying on back, hands by side",
-                "lying on back, hands under head",
-                "lying on stomach, hands by side",
-                "lying on stomach, hands under head.",
-                "lying on left side, hands under head.",
-                "lying on left side, hands by side",
-                "lying on right side, hands under head.",
-                "lying on right side, hands by side",
-                "Standing next to the bed."]
-    #1-hot encoding
-        #10, 11 are variations with covers, but our positions here are irrespective of covers
-        #so just 1-9 will be used.
 
-    #TODO: load array if exists
-    label_confidences = np.zeros((NUM_PARTICIPANTS, NUM_SAMPLES_PER_PARTICIPANT, NUM_POSITIONS), dtype=float)
-    label_confidences = userClassify(label_confidences, POSITIONS, 1, 1, 5, 1)
+    #1-hot encoding --> when classifying use confidence intervals
+
+
+    #TODO: load array if exists 
+        #There is a nice fast way to dump and load numpy arrays
+    label_confidences = np.zeros((NUM_PARTICIPANTS, NUM_SAMPLES_PER_PARTICIPANT, 3), dtype=float)
+    label_confidences = userClassify(label_confidences, 1, 1, 15, 1)
 
     #print(label_confidences[0][0])
     print(label_confidences[0])
     #TODO save array to file
 
-def userClassify(labels, labelOptions, startParticipant=1, startSample=1, endSample=45, endParticipant=3):
+def userClassify(labels, startParticipant=1, startSample=1, endSample=45, endParticipant=3):
     image_thread = ImageGUI()
     image_thread.start()
     for ii in range(startParticipant, endParticipant+1):
@@ -44,8 +37,9 @@ def userClassify(labels, labelOptions, startParticipant=1, startSample=1, endSam
             imgPath = parentFolder + 'RGB/uncover/image_' + (6-len(str(jj))) * '0' + str(jj) +'.png'
             image_thread.set_image_path(imgPath)
 
-            labelIdx = inputValue("P" + str(ii) + " S" + str(jj) + "    Please enter the label number: ", 0, len(labelOptions))
-            labels[ii-1][jj-1][labelIdx-1] = 1
+            labels[ii-1][jj-1][0] = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Back, 2. Stomach, 3. Left side, 4. Right side, 0. Other: ", 0, len(Position.S1_POSITIONS))
+            labels[ii-1][jj-1][1] = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Hands by side, 2. Hands under head, 0. Other ", 0, len(Position.S2_POSITIONS))
+            labels[ii-1][jj-1][2] = Position.getPos(labels[ii-1][jj-1][0], labels[ii-1][jj-1][1])
     image_thread.stop()
     return labels
 
