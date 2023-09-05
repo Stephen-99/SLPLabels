@@ -1,32 +1,30 @@
 #to store or read/write the labels.
 #Will use a labelsModel.py NN to classify it or something
 
-
-#NOTE: DO I want to separately classify it LS, RS, Back, Stomach, Standing, and then classify hands?
-    #classification will happen on same datapoints, so nah.
+import os
 import numpy as np
-from PIL import Image, ImageTk
-import tkinter as tk
-import threading
 from ImageGUI import *
 
 from Position import *
+from Errors import *
 
 def main():
+    FILENAME = "Position_labels.npy"
     NUM_PARTICIPANTS = 109
     NUM_SAMPLES_PER_PARTICIPANT = 45
 
     #1-hot encoding --> when classifying use confidence intervals
+    if (os.path.exists(FILENAME)):
+        with open(FILENAME, 'rb') as labels_file:
+            label_confidences = np.load(labels_file)
+    else:
+        label_confidences = np.zeros((NUM_PARTICIPANTS, NUM_SAMPLES_PER_PARTICIPANT, 3), dtype=float)
 
-
-    #TODO: load array if exists 
-        #There is a nice fast way to dump and load numpy arrays
-    label_confidences = np.zeros((NUM_PARTICIPANTS, NUM_SAMPLES_PER_PARTICIPANT, 3), dtype=float)
-    label_confidences = userClassify(label_confidences, 1, 1, 15, 1)
+    label_confidences = userClassify(label_confidences, startParticipant=16, endParticipant=20)
 
     #print(label_confidences[0][0])
-    print(label_confidences[0])
-    #TODO save array to file
+    print(label_confidences[2])
+    np.save(FILENAME, label_confidences)
 
 def userClassify(labels, startParticipant=1, startSample=1, endSample=45, endParticipant=3):
     image_thread = ImageGUI()
@@ -37,17 +35,37 @@ def userClassify(labels, startParticipant=1, startSample=1, endSample=45, endPar
             imgPath = parentFolder + 'RGB/uncover/image_' + (6-len(str(jj))) * '0' + str(jj) +'.png'
             image_thread.set_image_path(imgPath)
 
-            labels[ii-1][jj-1][0] = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Back, 2. Stomach, 3. Left side, 4. Right side, 0. Other: ", 0, len(Position.S1_POSITIONS))
-            labels[ii-1][jj-1][1] = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Hands by side, 2. Hands under head, 0. Other ", 0, len(Position.S2_POSITIONS))
-            labels[ii-1][jj-1][2] = Position.getPos(labels[ii-1][jj-1][0], labels[ii-1][jj-1][1])
+            #allows re-peating for the last value only
+            if not getValues(labels, ii, jj):
+                print("\nGOING BACK 1 picture to get new input. IMAGE WILL NOT CHANGE\n")
+                getValues(labels, ii, jj-1)
+                getValues(labels, ii, jj)
     image_thread.stop()
     return labels
+
+def getValues(labels, ii, jj):
+    try:
+        v1 = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Back, 2. Stomach, 3. Left side, 4. Right side, 0. Other: ", 0, len(Position.S1_POSITIONS))
+        v2 = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Hands by side, 2. Hands under head, 0. Other ", 0, len(Position.S2_POSITIONS))
+
+        while (v1 == None) or (v2 == None):
+            print("RETRYING")
+            v1 = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Back, 2. Stomach, 3. Left side, 4. Right side, 0. Other: ", 0, len(Position.S1_POSITIONS))
+            v2 = inputValue("P" + str(ii) + " S" + str(jj) + "    1. Hands by side, 2. Hands under head, 0. Other ", 0, len(Position.S2_POSITIONS))
+        labels[ii-1][jj-1][0] = v1
+        labels[ii-1][jj-1][1] = v2
+        labels[ii-1][jj-1][2] = Position.getPos(labels[ii-1][jj-1][0], labels[ii-1][jj-1][1])
+    except GoBackException as e:
+        return False
+    return True
+
+
 
 def printLabelOptions(labelOptions):
     for ii, label in enumerate(labelOptions):
         print(f"{ii}. {label}")
 
-#Integer values only
+#Integer values only 99 will cause it to retry. 101 will cause it to go back to previous.
 def inputValue(prompt, min, max):
     error = "ERORR: value must be between " + str(min) + " and " + str(max)
     outStr = prompt   
@@ -61,6 +79,10 @@ def inputValue(prompt, min, max):
         except ValueError:
             print()
             outStr = "ERROR: input must be an integer\n" + prompt
+        if value == 99:
+            return None
+        if value == 111:
+            raise GoBackException("Need to go back to previous input.")
     return value 
 
 if __name__ == "__main__":
