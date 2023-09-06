@@ -10,7 +10,7 @@ from Errors import *
 
 def main():
     FILENAME = "Position_labels.npy"
-    NUM_PARTICIPANTS = 109
+    NUM_PARTICIPANTS = 109 #102 for danaLab and 7 for simLab
     NUM_SAMPLES_PER_PARTICIPANT = 45
 
     #1-hot encoding --> when classifying use confidence intervals
@@ -20,10 +20,10 @@ def main():
     else:
         label_confidences = np.zeros((NUM_PARTICIPANTS, NUM_SAMPLES_PER_PARTICIPANT, 3), dtype=float)
 
-    label_confidences = userClassify(label_confidences, startParticipant=16, endParticipant=20)
+    label_confidences = userClassify(label_confidences, startParticipant=21, endParticipant=30)
 
     #print(label_confidences[0][0])
-    print(label_confidences[2])
+    #print(label_confidences[2])
     np.save(FILENAME, label_confidences)
 
 def userClassify(labels, startParticipant=1, startSample=1, endSample=45, endParticipant=3):
