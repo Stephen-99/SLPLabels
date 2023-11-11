@@ -1,7 +1,3 @@
-Explain the structure of the folder
-  Explain what each file is,
-  and what the HRpose is.
-
 # SLP labels
 This is a program for creating labels for the SLP dataset
 It is setup so that the image can appear on the left hand side, with the console on the right hand side for input.
