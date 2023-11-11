@@ -8,6 +8,11 @@ from ImageGUI import *
 from Position import *
 from Errors import *
 
+#TODO:
+    #load the current numpy array.
+        #go through each entry, and re-obtain the final output label based on the 1 and 2 labels, 
+        # cos the position thing was wrong and some of them will be wrong.
+
 def main():
     FILENAME = "Position_labels.npy"
     NUM_PARTICIPANTS = 109 #102 for danaLab and 7 for simLab
@@ -22,8 +27,6 @@ def main():
 
     label_confidences = userClassify(label_confidences, startParticipant=21, endParticipant=30)
 
-    #print(label_confidences[0][0])
-    #print(label_confidences[2])
     np.save(FILENAME, label_confidences)
 
 def userClassify(labels, startParticipant=1, startSample=1, endSample=45, endParticipant=3):
@@ -65,7 +68,7 @@ def printLabelOptions(labelOptions):
     for ii, label in enumerate(labelOptions):
         print(f"{ii}. {label}")
 
-#Integer values only 99 will cause it to retry. 101 will cause it to go back to previous.
+#Integer values only. 99 will cause it to retry. 101 will cause it to go back to previous.
 def inputValue(prompt, min, max):
     error = "ERORR: value must be between " + str(min) + " and " + str(max)
     outStr = prompt   

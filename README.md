@@ -1,3 +1,10 @@
+Explain the structure of the folder
+  Explain what each file is,
+  and what the HRpose is.
+dana and sim lab need to be added by downloading from: https://web.northeastern.edu/ostadabbas/2019/06/27/multimodal-in-bed-pose-estimation/
+
+
+
 # Adding position labels to this dataset.
 
 
