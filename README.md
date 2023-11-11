@@ -5,6 +5,7 @@ Only the keyboard is needed for input, the image will automatically refresh
 Follow the prompts for what number to input, and hit enter. There are 2 numbers for each image. First for rotation, then for arm location.
 If a mistake is made, an entry of 99 will cause it to retry for that image and 101 will cause it to go back to previous image
 
+![Labelling setup](<Labelling setup.png>)
 
 This project also includes an attempt to load the existing trained HRPose model which can be douns in HRpose/model_dump
 The config file contains further configurations for the HRPose model.
